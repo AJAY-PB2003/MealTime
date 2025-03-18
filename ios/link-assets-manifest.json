@@ -1,0 +1,21 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "src/const/assets/Fonts/DMSans-Bold.ttf",
+      "sha1": "e2465f11006633e4e4ac7652b543adfa6f0c26cd"
+    },
+    {
+      "path": "src/const/assets/Fonts/DMSans-Regular.ttf",
+      "sha1": "8599ebf95f6cd0694dfc3af43522b535fcbfba6d"
+    },
+    {
+      "path": "src/const/assets/Fonts/Doto-Bold.ttf",
+      "sha1": "d77f7349c2d37d35691ec506a7c2206a4bf74e4e"
+    },
+    {
+      "path": "src/const/assets/Fonts/Doto-Regular.ttf",
+      "sha1": "0d995a7ea5545b8b6def1cd09e4952845720baa8"
+    }
+  ]
+}
