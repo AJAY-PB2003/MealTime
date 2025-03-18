@@ -13,15 +13,20 @@ import CustomDropdown from './CustomDropdown';
 import {useTheme} from 'react-native-paper';
 
 const SelectPreferenceSlide = ({
-  item,
+  item = {},
   onOptionPress,
   selectedPreferences,
   isReminderOn,
 }) => {
   const {width} = useWindowDimensions();
   const theme = useTheme();
-  const {viewType, title, itemArr, preferenceName, preferenceSubCategory} =
-    item;
+  const {
+    viewType = '',
+    title = '',
+    itemArr = [],
+    preferenceName = '',
+    preferenceSubCategory = [],
+  } = item;
   const [isSwitchEnabled, setIsSwitchEnabled] = useState(false);
   const toggleSwitch = () => {
     setIsSwitchEnabled(previousState => !previousState);
@@ -66,6 +71,11 @@ const SelectPreferenceSlide = ({
                   <View key={arrItem.key} style={{marginBottom: 14}}>
                     <CustomDropdown
                       data={arrItem.values}
+                      selectedValue={
+                        selectedPreferences[preferenceName]?.[
+                          preferenceSubCategory[arrItemIndex]?.text
+                        ]
+                      }
                       onSelect={({key, text}) =>
                         onOptionPress(
                           preferenceName,

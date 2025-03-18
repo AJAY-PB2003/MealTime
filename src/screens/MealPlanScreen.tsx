@@ -1,12 +1,18 @@
 import React from 'react';
 import {StyleSheet, Text, useWindowDimensions, View} from 'react-native';
 import CustomButton from '../components/CustomButton';
-import {Meal_Plan_Screen_Static_Data} from '../const';
+import {Meal_Plan_Screen_Static_Data, SCREEN_NAMES} from '../const';
 import {useTheme} from 'react-native-paper';
+import {useNavigation} from '@react-navigation/native';
 
 const MealPlanScreen = () => {
   const {width} = useWindowDimensions();
   const theme = useTheme();
+  const navigation = useNavigation();
+
+  const onPress = () => {
+    navigation.navigate(SCREEN_NAMES.SELECT_MEAL_PLAN_SCREEN);
+  };
   return (
     <View style={styles.container}>
       <View style={styles.textContainer}>
@@ -26,7 +32,10 @@ const MealPlanScreen = () => {
         </Text>
       </View>
       <View style={{width: width - 32}}>
-        <CustomButton title={Meal_Plan_Screen_Static_Data.buttonTitle} />
+        <CustomButton
+          title={Meal_Plan_Screen_Static_Data.buttonTitle}
+          onPress={onPress}
+        />
       </View>
     </View>
   );

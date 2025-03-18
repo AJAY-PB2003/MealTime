@@ -9,7 +9,7 @@ const MyHeader = props => {
     onLeftIconPress,
     onRightIconPress,
     title,
-    leftIconName,
+    leftIconName = 'arrow-left',
     rightIconName,
     bgColor,
     iconColor = theme.colors.onTertiaryContainer,
@@ -17,11 +17,9 @@ const MyHeader = props => {
 
   return (
     <View style={[styles.container, {backgroundColor: bgColor}]}>
-      {leftIconName ? (
-        <Pressable style={styles.leftIconContainer} onPress={onLeftIconPress}>
-          <CustomIcon iconName={leftIconName} color={iconColor} />
-        </Pressable>
-      ) : null}
+      <Pressable style={styles.leftIconContainer} onPress={onLeftIconPress}>
+        <CustomIcon iconName={leftIconName} color={iconColor} />
+      </Pressable>
       {title ? <Text style={styles.heading}> {title}</Text> : null}
       {rightIconName ? (
         <Pressable style={styles.rightIconContainer} onPress={onRightIconPress}>

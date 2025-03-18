@@ -25,18 +25,17 @@ const WelcomeSlideScreen = () => {
   const navigation = useNavigation();
 
   const onHeaderLeftIconPress = () => {
-    if (index === 0) {
+    if (index && index <= welcomeSlideDataList.length - 1) {
+      const newIndex = index - 1;
+      setIndex(newIndex);
+      carouselRef?.current?.scrollToIndex({index: newIndex});
+    } else {
       Toast.show({
         type: 'error',
         text1: 'Last Screen',
         position: 'top',
         topOffset: 60,
       });
-    } else {
-      setIndex(prevIndex => prevIndex - 1);
-      if (carouselRef.current) {
-        carouselRef.current.scrollToIndex({index: index - 1});
-      }
     }
   };
 
@@ -44,10 +43,9 @@ const WelcomeSlideScreen = () => {
     if (index >= welcomeSlideDataList.length - 1) {
       navigation.navigate(SCREEN_NAMES.SELECT_PREFERENCE_SCREEN);
     } else {
-      setIndex(prevIndex => prevIndex + 1);
-      if (carouselRef.current) {
-        carouselRef.current.scrollToIndex({index: index + 1});
-      }
+      const newIndex = index + 1;
+      setIndex(newIndex);
+      carouselRef?.current?.scrollToIndex({index: newIndex});
     }
   };
 
@@ -97,7 +95,7 @@ const WelcomeSlideScreen = () => {
         <View style={styles.textContainer}>
           <Text style={styles.title}>{welcomeSlideDataList[index]?.title}</Text>
           <Text style={styles.subtitle}>
-            {welcomeSlideDataList[index].subtitle}
+            {welcomeSlideDataList[index]?.subtitle}
           </Text>
         </View>
         <View

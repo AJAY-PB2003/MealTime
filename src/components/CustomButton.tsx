@@ -1,6 +1,7 @@
 import React from 'react';
 import {Text, StyleSheet, Pressable} from 'react-native';
 import {useTheme} from 'react-native-paper';
+import {CustomIcon} from './CustomIcon';
 
 const CustomButton = props => {
   const theme = useTheme();
@@ -10,6 +11,9 @@ const CustomButton = props => {
     bgColor = theme.colors.primaryButton,
     borderColor = theme.colors.primary,
     titleColor = theme.colors.onPrimaryButton,
+    iconName,
+    iconColor,
+    iconSize,
   } = props;
   return (
     <Pressable
@@ -21,6 +25,9 @@ const CustomButton = props => {
         },
         styles.buttonContainer,
       ]}>
+      {iconName ? (
+        <CustomIcon iconName={iconName} iconSize={iconSize} color={iconColor} />
+      ) : null}
       <Text
         style={[
           {
@@ -40,6 +47,10 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     paddingHorizontal: 24,
     paddingVertical: 16,
+    borderWidth: 1,
+    flexDirection:'row',
+    gap:12,
+    justifyContent:'center'
   },
   buttonTitle: {
     textAlign: 'center',

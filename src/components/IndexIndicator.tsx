@@ -14,9 +14,12 @@ const IndexIndicator = props => {
             key={_dataListItem.key}
             style={[
               styles.chips,
-              dataListIndex <= index
-                ? {backgroundColor: theme.colors.secondaryIconFocused}
-                : {backgroundColor: theme.colors.secondaryIconUnfocused},
+              {
+                backgroundColor:
+                  dataListIndex <= index
+                    ? theme.colors.secondaryIconFocused
+                    : theme.colors.secondaryIconUnfocused,
+              },
             ]}
           />
         );

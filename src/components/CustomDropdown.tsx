@@ -4,12 +4,17 @@ import {useTheme} from 'react-native-paper';
 import {CustomIcon} from './CustomIcon';
 import {Select_Preference_Static_Data} from '../const';
 
-const CustomDropdown = ({data, onSelect, iconName, initialDropdownValue}) => {
+const CustomDropdown = ({
+  data,
+  onSelect,
+  iconName,
+  initialDropdownValue,
+  selectedValue,
+}) => {
   const theme = useTheme();
   const dropdownButton = useRef(null);
   const [dropdownTop, setDropdownTop] = useState(0);
   const [isDropdownVisible, setDropdownVisible] = useState(false);
-  const [selectedValue, setSelectedValue] = useState(null);
 
   const toggleDropdown = () => {
     isDropdownVisible ? setDropdownVisible(false) : openDropdown();
@@ -24,7 +29,6 @@ const CustomDropdown = ({data, onSelect, iconName, initialDropdownValue}) => {
     setDropdownVisible(true);
   };
   const handleSelect = item => {
-    setSelectedValue(item.text);
     onSelect(item);
     setDropdownVisible(false);
   };
@@ -32,17 +36,21 @@ const CustomDropdown = ({data, onSelect, iconName, initialDropdownValue}) => {
     return (
       <Pressable
         style={[
-          selectedValue === item.text
-            ? {backgroundColor: theme.colors.primary}
-            : {backgroundColor: theme.colors.primaryContainerFocused},
           styles.option,
-          {borderBottomColor: theme.colors.onPrimaryContainer},
+          {
+            backgroundColor:
+              selectedValue?.key === item.key
+                ? theme.colors.primary
+                : theme.colors.primaryContainerFocused,
+            borderBottomColor: theme.colors.onPrimaryContainer,
+          },
         ]}
         onPress={() => handleSelect(item)}>
         <Text style={styles.optionText}>{item.text}</Text>
       </Pressable>
     );
   };
+  const dropdownText = selectedValue?.text || `Select ${initialDropdownValue}`;
 
   return (
     <>
@@ -56,9 +64,7 @@ const CustomDropdown = ({data, onSelect, iconName, initialDropdownValue}) => {
         ]}
         ref={dropdownButton}
         onPress={toggleDropdown}>
-        <Text style={styles.buttonText}>
-          {selectedValue || `Select ${initialDropdownValue}`}
-        </Text>
+        <Text style={styles.buttonText}>{dropdownText}</Text>
         <CustomIcon
           iconName={iconName}
           iconSize={24}
@@ -151,7 +157,7 @@ const styles = StyleSheet.create({
   option: {
     paddingVertical: 16,
     paddingHorizontal: 20,
-    // borderBottomWidth: 0.3,
+    borderBottomWidth: 0.3,
   },
   optionText: {
     fontSize: 18,

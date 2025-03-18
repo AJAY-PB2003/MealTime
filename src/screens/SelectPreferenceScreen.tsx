@@ -19,24 +19,23 @@ const SelectPreferenceScreen = () => {
   const navigation = useNavigation();
 
   const onHeaderLeftIconPress = () => {
-    if (index === 0) {
-      navigation.goBack();
+    if (index && index <= selectPreferenceSlideDataList.length - 1) {
+      const newIndex = index - 1;
+      setIndex(newIndex);
+      carouselRef?.current?.scrollToIndex({index: newIndex});
     } else {
-      setIndex(prevIndex => prevIndex - 1);
-      if (carouselRef.current) {
-        carouselRef.current.scrollToIndex({index: index - 1});
-      }
+      navigation.goBack();
     }
   };
   const onAlertButton = () => {
     navigation.popToTop();
-    navigation.navigate(SCREEN_NAMES.MEAL_PLAN_SCREEN);
+    navigation.navigate(SCREEN_NAMES.HOME_SCREEN);
   };
 
   const onContinuePress = () => {
     if (index >= selectPreferenceSlideDataList.length - 1) {
-      console.log(selectedPreferences);
-      if (isReminderOn.current === true) {
+      // console.log(selectedPreferences);
+      if (isReminderOn.current) {
         Alert.alert(
           Select_Preference_Static_Data.alert.title,
           Select_Preference_Static_Data.alert.message,
@@ -53,7 +52,7 @@ const SelectPreferenceScreen = () => {
         );
       } else {
         navigation.popToTop();
-        navigation.navigate(SCREEN_NAMES.MEAL_PLAN_SCREEN);
+        navigation.navigate(SCREEN_NAMES.HOME_SCREEN);
       }
     } else {
       if (
@@ -62,10 +61,9 @@ const SelectPreferenceScreen = () => {
         ]?.length > 0 ||
         selectPreferenceSlideDataList[index]?.skipable
       ) {
-        setIndex(prevIndex => prevIndex + 1);
-        if (carouselRef.current) {
-          carouselRef.current.scrollToIndex({index: index + 1});
-        }
+        const newIndex = index + 1;
+        setIndex(newIndex);
+        carouselRef?.current?.scrollToIndex({index: newIndex});
       } else {
         Toast.show({
           type: 'error',
@@ -77,10 +75,9 @@ const SelectPreferenceScreen = () => {
     }
   };
   const onSkipPress = () => {
-    setIndex(prevIndex => prevIndex + 1);
-    if (carouselRef.current) {
-      carouselRef.current.scrollToIndex({index: index + 1});
-    }
+    const newIndex = index + 1;
+    setIndex(newIndex);
+    carouselRef?.current?.scrollToIndex({index: newIndex});
   };
 
   const onOptionPress = (
