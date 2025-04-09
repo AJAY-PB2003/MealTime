@@ -1,5 +1,5 @@
 import './gesture-handler';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {MD3LightTheme as DefaultTheme, PaperProvider} from 'react-native-paper';
 import MyStack from './src/nav';
 import {NavigationContainer} from '@react-navigation/native';
@@ -10,6 +10,7 @@ import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {useColorScheme} from 'react-native';
 import {COLOR_SCHEME} from './src/const';
 import {HexCodes} from './src/const/colorHexCode';
+import SplashScreen from './src/screens/SplashScreen';
 
 const lightTheme = {
   ...DefaultTheme,
@@ -30,6 +31,7 @@ const lightTheme = {
     primaryIcon: HexCodes._999999,
     primaryError: HexCodes.E55B48,
     primaryBorder: HexCodes.CCCCCC,
+    primaryBlurBackground: HexCodes._19191999,
 
     secondary: HexCodes._33995B,
     secondaryContainer: HexCodes.E6E6E6,
@@ -66,6 +68,7 @@ const darkTheme = {
     primaryIcon: HexCodes._999999,
     primaryError: HexCodes.E55B48,
     primaryBorder: HexCodes.CCCCCC,
+    primaryBlurBackground: HexCodes._19191999,
 
     secondary: HexCodes._33995B,
     secondaryContainer: HexCodes.E6E6E6,
@@ -86,13 +89,19 @@ const darkTheme = {
 
 function App(): React.JSX.Element {
   const colorScheme = useColorScheme();
+  const [showSplash, setShowSplash] = useState(true);
+  useEffect(() => {
+    setTimeout(() => {
+      setShowSplash(false);
+    }, 2000);
+  }, []);
 
   return (
     <GestureHandlerRootView>
       <PaperProvider
         theme={colorScheme === COLOR_SCHEME.DARK ? darkTheme : lightTheme}>
         <NavigationContainer>
-          <MyStack />
+          {showSplash ? <SplashScreen /> : <MyStack />}
         </NavigationContainer>
         <Toast config={toastConfig} visibilityTime={1000} />
       </PaperProvider>

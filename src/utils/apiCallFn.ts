@@ -1,4 +1,4 @@
-const apiCallFn = async (url, config={}) => {
+const apiCallFn = async (url, config = {}) => {
   // console.log(url);
   const options = {
     method: 'GET',
@@ -31,7 +31,9 @@ const apiCallFn = async (url, config={}) => {
     // console.log(data);
     return data;
   } catch (error) {
-    console.log(error);
+    // return error;
+    // console.log(error);
+    // return undefined;
   }
 };
 export {apiCallFn};

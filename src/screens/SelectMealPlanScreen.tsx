@@ -1,6 +1,14 @@
-import React, {useEffect, useRef} from 'react';
-import {StyleSheet, Text, View, ScrollView, FlatList} from 'react-native';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import React, {useEffect, useRef, useState} from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  FlatList,
+  useWindowDimensions,
+  Image,
+} from 'react-native';
+import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
 import {useDispatch, useSelector} from 'react-redux';
 import {fetchRecipes} from '../redux/recipes/action';
 import MyHeader from '../components/MyHeader';
@@ -25,8 +33,12 @@ import {mockSelectMealScreenData} from '../const/mockSelectMealScreenData';
 import CustomButton from '../components/CustomButton';
 import CustomBottomSheetHandle from '../components/CustomBottomSheetHandle';
 import {useTheme} from 'react-native-paper';
+import {FontNames} from '../const/fontNames';
 
-const SelectMealPlanScreen = () => {
+const SelectMealPlanScreen = ({route}) => {
+  const firstTimeMeal = route?.params?.firstTimeMeal ?? false;
+  const {bottom} = useSafeAreaInsets();
+  // console.log(firstTimeMeal);
   const {
     favoriteIcon,
     nonFavoriteIcon,
@@ -37,10 +49,11 @@ const SelectMealPlanScreen = () => {
     bSSubHeading,
     bSButtonTitle,
   } = Select_Meal_Plan_Screen_StaticData;
+  const {width, height} = useWindowDimensions();
   const theme = useTheme();
   const bottomSheetRef = useRef(null);
   const screenRef = useRef(null);
-
+  const [bottomSheetShown, setBottomSheetShown] = useState(true);
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const categorizedRecipesData = useSelector(
@@ -51,6 +64,7 @@ const SelectMealPlanScreen = () => {
   );
   // console.log(favoriteRecipesList);
   const recipeDataStatus = useSelector(state => state?.recipes?.status);
+  // console.log(recipeDataStatus);
   const dataLoaded = recipeDataStatus === API_STATUS.SUCCEEDED ? true : false;
 
   // console.log(categorizedRecipesData);
@@ -59,14 +73,20 @@ const SelectMealPlanScreen = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    if (dataLoaded) {
+    if (dataLoaded && firstTimeMeal) {
+      setBottomSheetShown(false);
       bottomSheetRef?.current?.expand();
     }
-  }, [dataLoaded]);
+  }, [dataLoaded, firstTimeMeal]);
+
+  const onTryAgainPress = () => {
+    dispatch(fetchRecipes());
+  };
 
   const onBSPress = () => {
     if (bottomSheetRef.current) {
       bottomSheetRef.current.close();
+      setBottomSheetShown(true);
     }
   };
 
@@ -78,7 +98,9 @@ const SelectMealPlanScreen = () => {
     navigation.goBack();
   };
 
-  const onHeaderRightIconPress = () => {};
+  const onHeaderRightIconPress = () => {
+    navigation.navigate(SCREEN_NAMES.RECIPE_SEARCH_SCREEN);
+  };
 
   const onCardPress = id => {
     navigation.navigate(SCREEN_NAMES.MEAL_DETAILS_SCREEN, {recipeId: id});
@@ -106,13 +128,13 @@ const SelectMealPlanScreen = () => {
     );
     return (
       <MealCard
-        title={item?.name}
-        imgUrl={item?.image}
+        title={item?.title}
+        imgUrl={item?.imgUrl}
+        prepTime={item?.preparationTime}
+        rating={item?.rating}
         iconName={isFavorite ? favoriteIcon : nonFavoriteIcon}
         iconColor={
-          isFavorite
-            ? theme.colors.primaryError
-            : theme.colors.onPrimaryContainer
+          isFavorite ? theme.colors.primaryError : theme.colors.primaryIcon
         }
         onIconPress={() => onCardIconPress(item)}
         onCardPress={() => onCardPress(item?.id)}
@@ -125,69 +147,108 @@ const SelectMealPlanScreen = () => {
       <MyHeader
         leftIconName={headerLeftIcon}
         onLeftIconPress={onHeaderLeftIconPress}
-        onRightIconPress={onHeaderRightIconPress}
-        rightIconName={headerRightIcon}
+        onRightIconPress={
+          recipeDataStatus === API_STATUS.ERROR
+            ? undefined
+            : onHeaderRightIconPress
+        }
+        rightIconName={
+          recipeDataStatus === API_STATUS.ERROR ? null : headerRightIcon
+        }
       />
-      <ScrollView style={styles.container}>
-        <Text style={styles.heading}>{title}</Text>
-        {(categorizedRecipesData ?? mockSelectMealScreenData)?.map(
-          (categorizedListItem, categorizedListIndex) => {
-            return (
-              <View key={categorizedListItem?.key}>
-                <ShimmerPlaceholder
-                  style={styles.subHeadingShimmer}
-                  visible={dataLoaded}>
-                  <Text style={styles.subHeading}>
-                    {categorizedListItem.title}
-                  </Text>
-                </ShimmerPlaceholder>
-                <FlatList
-                  data={categorizedListItem?.data}
-                  keyExtractor={item => item?.id}
-                  horizontal
-                  showsHorizontalScrollIndicator={false}
-                  renderItem={dataLoaded ? renderItem : renderShimmerItem}
-                  contentContainerStyle={{gap: 16, paddingHorizontal: 16}}
-                />
+
+      {recipeDataStatus === API_STATUS.ERROR ? (
+        <View style={styles.errorContainer}>
+          <Text style={styles.subHeading}>
+            {Select_Meal_Plan_Screen_StaticData.errorText}
+          </Text>
+          <CustomButton
+            title={Select_Meal_Plan_Screen_StaticData.errorBtnText}
+            onPress={onTryAgainPress}
+          />
+        </View>
+      ) : (
+        <ScrollView style={styles.container}>
+          <Text style={styles.heading}>{title}</Text>
+          {(categorizedRecipesData ?? mockSelectMealScreenData)?.map(
+            (categorizedListItem, categorizedListIndex) => {
+              return (
+                <View key={categorizedListItem?.key}>
+                  <ShimmerPlaceholder
+                    style={styles.subHeadingShimmer}
+                    visible={dataLoaded}>
+                    <Text style={styles.subHeading}>
+                      {categorizedListItem.title}
+                    </Text>
+                  </ShimmerPlaceholder>
+                  <FlatList
+                    data={categorizedListItem?.data}
+                    keyExtractor={item => item?.id}
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    renderItem={dataLoaded ? renderItem : renderShimmerItem}
+                    contentContainerStyle={{gap: 16, paddingHorizontal: 16}}
+                  />
+                </View>
+              );
+            },
+          )}
+        </ScrollView>
+      )}
+
+      {bottomSheetShown ? null : (
+        <View
+          style={{
+            backgroundColor: theme.colors.primaryBlurBackground,
+            position: 'absolute',
+            zIndex: 1,
+            width: width,
+            height: height,
+          }}>
+          <BottomSheet
+            ref={bottomSheetRef}
+            index={0}
+            handleComponent={renderBSHandle}>
+            <BottomSheetView
+              style={[styles.bSContainer, {paddingBottom: bottom + 10}]}>
+              <View style={styles.bSTextContainer}>
+                <Text style={styles.bSHeading}>{bSHeading}</Text>
+                <Text
+                  style={[
+                    styles.bSSubHeading,
+                    {color: theme.colors.onSecondaryContainerSubheading},
+                  ]}>
+                  {bSSubHeading}
+                </Text>
               </View>
-            );
-          },
-        )}
-      </ScrollView>
-      <BottomSheet
-        ref={bottomSheetRef}
-        index={-1}
-        handleComponent={renderBSHandle}>
-        <BottomSheetView style={styles.bSContainer}>
-          <View style={styles.bSTextContainer}>
-            <Text style={styles.bSHeading}>{bSHeading}</Text>
-            <Text
-              style={[
-                styles.bSSubHeading,
-                {color: theme.colors.onSecondaryContainerSubheading},
-              ]}>
-              {bSSubHeading}
-            </Text>
-          </View>
-          <CustomButton title={bSButtonTitle} onPress={onBSPress} />
-        </BottomSheetView>
-      </BottomSheet>
+              <CustomButton title={bSButtonTitle} onPress={onBSPress} />
+            </BottomSheetView>
+          </BottomSheet>
+        </View>
+      )}
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 10,
+    // marginTop: 10,
+    marginBottom: 10,
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 16,
   },
 
   heading: {
     marginLeft: 16,
-    marginTop: 24,
+    // marginTop: 24,
     fontSize: 32,
     // fontWeight: 700,
-    fontFamily: 'DMSans-Bold',
-    letterSpacing:-1.8
+    fontFamily: FontNames.DM_Sans_Bold,
+    letterSpacing: -1.8,
   },
   subHeadingShimmer: {
     marginLeft: 16,
@@ -196,32 +257,32 @@ const styles = StyleSheet.create({
   },
   subHeading: {
     fontSize: 24,
-    fontWeight: 700,
+    // fontWeight: 700,
 
-    fontFamily: 'DMSans-Bold',
+    fontFamily: FontNames.DM_Sans_Bold,
   },
   bSContainer: {
     paddingHorizontal: 28,
     paddingTop: 36,
-    paddingBottom: 64,
+    // paddingBottom: 40,
   },
   bSTextContainer: {
     gap: 14,
-    marginBottom: 32,
+    marginBottom: 28,
   },
   bSHeading: {
-    fontSize: 31,
-    fontWeight: 700,
-    fontFamily: 'DMSans-Bold',
-    letterSpacing:-1.6
-
+    fontSize: 28,
+    // fontWeight: 700,
+    fontFamily: FontNames.DM_Sans_Bold,
+    letterSpacing: -1.6,
+    // textAlign:'center'
   },
   bSSubHeading: {
     fontSize: 18,
-    fontWeight: 400,
-    marginRight: 32,
-    fontFamily: 'DMSans-Regular',
-
+    // fontWeight: 400,
+    // marginRight: 32,
+    fontFamily: FontNames.DM_Sans_Regular,
+    // textAlign:'center'
   },
 });
 export default SelectMealPlanScreen;

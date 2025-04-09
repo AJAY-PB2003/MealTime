@@ -24,13 +24,13 @@ const selectPreferenceSlideDataList = [
     skipable: true,
     itemArr: [
       {text: 'Gluten', key: 'gluten'},
+      {text: 'Mustard', key: 'mustard'},
+      {text: 'Nightshade', key: 'nightshade'},
       {text: 'Peanut', key: 'peanut'},
-      {text: 'Tree Nut', key: 'treeNut'},
       {text: 'Soy', key: 'soy'},
       {text: 'Seasame', key: 'seasame'},
-      {text: 'Mustard', key: 'mustard'},
       {text: 'Sulfite', key: 'sulfite'},
-      {text: 'Nightshade', key: 'nightshade'},
+      {text: 'Tree Nut', key: 'treeNut'},
     ],
   },
   {
@@ -89,17 +89,30 @@ const selectPreferenceSlideDataList = [
     itemArr: [
       {
         key: 'timeList',
-        values: [
-          {key: 'atTenAM', text: 'at 10:00 AM'},
-          {key: 'atElevenAM', text: 'at 11:00 AM'},
-          {key: 'atTwelveAM', text: 'at 12:00 AM'},
-        ],
+        values: Array.from({length: 24}, (_, i) => {
+          const hour = i % 12 === 0 ? 12 : i % 12; // Convert to 12-hour format
+          const period = i < 12 ? 'AM' : 'PM'; // Determine AM/PM
+          return {
+            key: `at${hour}${period}`,
+            text: `at ${hour}:00 ${period}`,
+          };
+        }),
+        // values: [
+        //   {key: 'atTenAM', text: 'at 10:00 AM'},
+        //   {key: 'atElevenAM', text: 'at 11:00 AM'},
+        //   {key: 'atTwelveAM', text: 'at 12:00 AM'},
+        // ],
       },
       {
         key: 'daysList',
         values: [
           {key: 'onSundays', text: 'on Sundays'},
           {key: 'onMondays', text: 'on Mondays'},
+          {key: 'onTuesdays', text: 'on Tuesdays'},
+          {key: 'onWednesdays', text: 'on Wednesdays'},
+          {key: 'onThursdays', text: 'on Thursdays'},
+          {key: 'onFridays', text: 'on Fridays'},
+          {key: 'onSaturdays', text: 'on Saturdays'},
         ],
       },
     ],

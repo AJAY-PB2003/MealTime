@@ -11,6 +11,7 @@ const recipeDetailsParser = item => {
   item?.instructions?.forEach((instruction, index) => {
     instructionsList.push({
       key: `${item?.name.replaceAll(' ', '')}_ins_${index}`.toLowerCase(),
+      ins_No: index + 1,
       name: instruction,
     });
   });
@@ -19,10 +20,12 @@ const recipeDetailsParser = item => {
     id: item?.id,
     title: item?.name,
     imgUrl: item?.image,
-    cookingTime: item?.cookTimeMinutes,
+    preparationTime: item?.prepTimeMinutes,
     servings: item?.servings,
+    rating: item?.rating,
     ingredients: ingredientsList,
     instructions: instructionsList,
+    tags: item?.tags,
   };
 };
 

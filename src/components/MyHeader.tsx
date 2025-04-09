@@ -2,6 +2,7 @@ import React from 'react';
 import {View, Text, StyleSheet, Pressable} from 'react-native';
 import {CustomIcon} from './CustomIcon';
 import {useTheme} from 'react-native-paper';
+import {FontNames} from '../const/fontNames';
 
 const MyHeader = props => {
   const theme = useTheme();
@@ -33,9 +34,10 @@ const MyHeader = props => {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    padding: 16,
+    paddingHorizontal: 16,
     paddingBottom: 8,
     paddingTop: 8,
+    height: 52,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -51,7 +53,7 @@ const styles = StyleSheet.create({
   },
   heading: {
     fontSize: 23,
-    fontFamily: 'DMSans-Bold',
+    fontFamily: FontNames.DM_Sans_Bold,
     textAlign: 'center',
   },
 });

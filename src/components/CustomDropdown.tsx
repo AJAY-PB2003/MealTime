@@ -3,6 +3,7 @@ import {View, Text, FlatList, StyleSheet, Pressable, Modal} from 'react-native';
 import {useTheme} from 'react-native-paper';
 import {CustomIcon} from './CustomIcon';
 import {Select_Preference_Static_Data} from '../const';
+import {FontNames} from '../const/fontNames';
 
 const CustomDropdown = ({
   data,
@@ -40,9 +41,9 @@ const CustomDropdown = ({
           {
             backgroundColor:
               selectedValue?.key === item.key
-                ? theme.colors.primary
-                : theme.colors.primaryContainerFocused,
-            borderBottomColor: theme.colors.onPrimaryContainer,
+                ? theme.colors.primaryContainerFocused
+                : theme.colors.primaryContainerUnfocused,
+            borderBottomColor: theme.colors.primaryBorder,
           },
         ]}
         onPress={() => handleSelect(item)}>
@@ -72,7 +73,10 @@ const CustomDropdown = ({
         />
       </Pressable>
       {isDropdownVisible ? (
-        <Modal visible={isDropdownVisible} transparent animationType="none">
+        <Modal
+          visible={isDropdownVisible}
+          transparent={true}
+          animationType="none">
           <Pressable style={{flex: 1}} onPressOut={toggleDropdown}>
             <View
               style={[
@@ -83,7 +87,7 @@ const CustomDropdown = ({
                   top: dropdownTop,
                 },
               ]}>
-              <View style={styles.optionHeader}>
+              {/* <View style={styles.optionHeader}>
                 <Text style={styles.optionHeaderText}>
                   {initialDropdownValue}
                 </Text>
@@ -99,11 +103,13 @@ const CustomDropdown = ({
                     color={theme.colors.onTertiary}
                   />
                 </Pressable>
-              </View>
+              </View> */}
               <FlatList
                 data={data}
                 keyExtractor={item => item.key}
                 renderItem={renderItem}
+                bounces={false}
+                showsVerticalScrollIndicator={false}
               />
             </View>
           </Pressable>
@@ -124,16 +130,17 @@ const styles = StyleSheet.create({
   buttonText: {
     textAlign: 'center',
     fontSize: 18,
-    fontFamily: 'DMSans-Regular',
-    fontWeight: 400,
+    fontFamily: FontNames.DM_Sans_Regular,
+    // fontWeight: 400,
   },
   dropdown: {
+    height: 270,
     marginTop: 1,
     marginHorizontal: 16,
     elevation: 5,
     shadowOpacity: 1,
-    shadowRadius: 5,
-    shadowOffset: {width: 3, height: 2},
+    shadowRadius: 2,
+    shadowOffset: {width: 1, height: 1},
   },
   optionHeader: {
     flexDirection: 'row',
@@ -147,8 +154,8 @@ const styles = StyleSheet.create({
     fontSize: 18,
     textAlign: 'center',
     flex: 1,
-    fontFamily: 'DMSans-Bold',
-    fontWeight: 500,
+    fontFamily: FontNames.DM_Sans_Bold,
+    // fontWeight: 500,
   },
   optionHeaderIcon: {
     position: 'absolute',
@@ -157,7 +164,7 @@ const styles = StyleSheet.create({
   option: {
     paddingVertical: 16,
     paddingHorizontal: 20,
-    borderBottomWidth: 0.3,
+    borderBottomWidth: 1,
   },
   optionText: {
     fontSize: 18,

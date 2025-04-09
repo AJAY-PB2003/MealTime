@@ -1,10 +1,10 @@
 import {recipeCategories} from '../../const';
 
-const categorizedRecipeListParser = apiResponse => {
+const categorizedRecipeListParser = recipesList => {
   // console.log('Inside parser');
   const categorizedRecipeList = [];
   recipeCategories.forEach(category => {
-    const categoryList = apiResponse?.recipes?.filter(item =>
+    const categoryList = recipesList?.filter(item =>
       item.tags.includes(category.name),
     );
     // console.log(categoryList);

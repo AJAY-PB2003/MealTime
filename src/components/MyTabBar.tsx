@@ -10,6 +10,7 @@ import {useTheme} from 'react-native-paper';
 import {Text} from '@react-navigation/elements';
 import {BOTTOM_TAB} from '../const';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {FontNames} from '../const/fontNames';
 
 const MyTabBar = ({state, descriptors, navigation, onTabPress}) => {
   const {colors} = useTheme();
@@ -78,18 +79,20 @@ const MyTabBar = ({state, descriptors, navigation, onTabPress}) => {
 const styles = StyleSheet.create({
   tabBarContainer: {
     paddingHorizontal: 35.5,
-    paddingTop: 10,
+    // paddingTop: 10,
+    // marginBottom:10
   },
   tabBar: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    paddingVertical: 10,
   },
   tabBarItem: {
     alignItems: 'center',
   },
   text: {
     fontSize: 12,
-    fontFamily: 'DMSans',
+    fontFamily: FontNames.DM_Sans_Bold,
   },
 });
 

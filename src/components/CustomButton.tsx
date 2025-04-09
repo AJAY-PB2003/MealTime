@@ -14,29 +14,35 @@ const CustomButton = props => {
     iconName,
     iconColor,
     iconSize,
+    containerStyle,
   } = props;
+
   return (
     <Pressable
       onPress={onPress}
       style={[
+        styles.buttonContainer,
         {
           backgroundColor: bgColor,
           borderColor: borderColor,
         },
-        styles.buttonContainer,
+        containerStyle,
       ]}>
       {iconName ? (
         <CustomIcon iconName={iconName} iconSize={iconSize} color={iconColor} />
       ) : null}
-      <Text
-        style={[
-          {
-            color: titleColor,
-          },
-          styles.buttonTitle,
-        ]}>
-        {title}
-      </Text>
+
+      {title ? (
+        <Text
+          style={[
+            {
+              color: titleColor,
+            },
+            styles.buttonTitle,
+          ]}>
+          {title}
+        </Text>
+      ) : null}
     </Pressable>
   );
 };
@@ -45,17 +51,17 @@ export default CustomButton;
 const styles = StyleSheet.create({
   buttonContainer: {
     borderRadius: 16,
-    paddingHorizontal: 24,
+    paddingHorizontal: 12,
     paddingVertical: 16,
     borderWidth: 1,
-    flexDirection:'row',
-    gap:12,
-    justifyContent:'center'
+    flexDirection: 'row',
+    gap: 8,
+    justifyContent: 'center',
   },
   buttonTitle: {
     textAlign: 'center',
     fontFamily: 'DMSans-Bold',
-    fontWeight: 700,
+    // fontWeight: 700,
     fontSize: 18,
   },
 });

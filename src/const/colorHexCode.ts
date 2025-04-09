@@ -11,6 +11,7 @@ const HexCodes = {
   _33995B: '#33995B',
   _433D370F: '#433D370F',
   B3B3B3: '#B3B3B3',
+  _19191999: '#19191999',
 };
 
 export {HexCodes};

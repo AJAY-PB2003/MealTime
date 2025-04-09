@@ -5,11 +5,19 @@ import {BOTTOM_TAB, SCREEN_NAMES} from '../const';
 import MealPlanScreen from '../screens/MealPlanScreen';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import MyTabBar from '../components/MyTabBar';
-import CollectionsScreen from '../screens/CollectionsScreen';
+import CollectionsScreen from '../screens/CollectionItemsScreen';
 import FavoritesScreen from '../screens/FavoritesScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import SelectMealPlanScreen from '../screens/SelectMealPlanScreen';
 import MealDetailsScreen from '../screens/MealDetailsScreen';
+import InstructionsScreen from '../screens/InstructionsScreen';
+import AddNewCollectionScreen from '../screens/AddNewCollectionScreen';
+import SaveToCollectionScreen from '../screens/SaveToCollectionScreen';
+import NotesScreen from '../screens/NotesScreen';
+import FeedbackScreen from '../screens/FeedbackScreen';
+import CollectionItemsScreen from '../screens/CollectionItemsScreen';
+import RecipeSearchScreen from '../screens/RecipeSearchScreen';
+import EatingPreferencesScreen from '../screens/EatingPreferencesScreen';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -52,13 +60,13 @@ const HomeScreen = () => {
           },
         }}
       />
-      <Tab.Screen
+      {/* <Tab.Screen
         name={SCREEN_NAMES.COLLECTIONS_SCREEN}
         component={CollectionsScreen}
         options={{
           tabBarLabel: BOTTOM_TAB[SCREEN_NAMES.COLLECTIONS_SCREEN].label,
         }}
-      />
+      /> */}
       <Tab.Screen
         name={SCREEN_NAMES.FAVORITES_SCREEN}
         component={FavoritesScreen}
@@ -92,12 +100,42 @@ function MyStack() {
       />
       <Stack.Screen name={SCREEN_NAMES.HOME_SCREEN} component={HomeScreen} />
       <Stack.Screen
+        name={SCREEN_NAMES.COLLECTION_ITEMS_SCREEN}
+        component={CollectionItemsScreen}
+      />
+
+      <Stack.Screen
         name={SCREEN_NAMES.SELECT_MEAL_PLAN_SCREEN}
         component={SelectMealPlanScreen}
       />
       <Stack.Screen
+        name={SCREEN_NAMES.RECIPE_SEARCH_SCREEN}
+        component={RecipeSearchScreen}
+      />
+      <Stack.Screen
         name={SCREEN_NAMES.MEAL_DETAILS_SCREEN}
         component={MealDetailsScreen}
+      />
+      <Stack.Screen
+        name={SCREEN_NAMES.INSTRUCTIONS_SCREEN}
+        component={InstructionsScreen}
+      />
+      <Stack.Screen
+        name={SCREEN_NAMES.SAVE_TO_COLLECTION_SCREEN}
+        component={SaveToCollectionScreen}
+      />
+      <Stack.Screen
+        name={SCREEN_NAMES.ADD_NEW_COLLECTION_SCREEN}
+        component={AddNewCollectionScreen}
+      />
+      <Stack.Screen name={SCREEN_NAMES.NOTES_SCREEN} component={NotesScreen} />
+      <Stack.Screen
+        name={SCREEN_NAMES.FEEDBACK_SCREEN}
+        component={FeedbackScreen}
+      />
+      <Stack.Screen
+        name={SCREEN_NAMES.EATING_PREFERNCES_SCREEN}
+        component={EatingPreferencesScreen}
       />
     </Stack.Navigator>
   );

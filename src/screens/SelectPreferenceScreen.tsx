@@ -7,9 +7,15 @@ import Carousel from '../components/Carousel';
 import CustomButton from '../components/CustomButton';
 import {SCREEN_NAMES, Select_Preference_Static_Data} from '../const';
 import SelectPreferenceSlide from '../components/SelectPreferenceSlide';
-import {useNavigation} from '@react-navigation/native';
+import {StackActions, useNavigation} from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import {FontNames} from '../const/fontNames';
+import {useDispatch} from 'react-redux';
+import {
+  addEatingPreferences,
+  setEatingPreferences,
+} from '../redux/userData/action';
 
 const SelectPreferenceScreen = () => {
   const [index, setIndex] = useState(0);
@@ -17,6 +23,7 @@ const SelectPreferenceScreen = () => {
   const carouselRef = useRef(null);
   const isReminderOn = useRef(false);
   const navigation = useNavigation();
+  const dispatch = useDispatch();
 
   const onHeaderLeftIconPress = () => {
     if (index && index <= selectPreferenceSlideDataList.length - 1) {
@@ -29,12 +36,13 @@ const SelectPreferenceScreen = () => {
   };
   const onAlertButton = () => {
     navigation.popToTop();
-    navigation.navigate(SCREEN_NAMES.HOME_SCREEN);
+    navigation.dispatch(StackActions.replace(SCREEN_NAMES.HOME_SCREEN));
   };
 
   const onContinuePress = () => {
     if (index >= selectPreferenceSlideDataList.length - 1) {
       // console.log(selectedPreferences);
+      dispatch(setEatingPreferences(selectedPreferences));
       if (isReminderOn.current) {
         Alert.alert(
           Select_Preference_Static_Data.alert.title,
@@ -52,7 +60,7 @@ const SelectPreferenceScreen = () => {
         );
       } else {
         navigation.popToTop();
-        navigation.navigate(SCREEN_NAMES.HOME_SCREEN);
+        navigation.dispatch(StackActions.replace(SCREEN_NAMES.HOME_SCREEN));
       }
     } else {
       if (
@@ -90,31 +98,35 @@ const SelectPreferenceScreen = () => {
       selectPreferenceSlideDataList[index]?.viewType ===
       Select_Preference_Static_Data.viewTypeNames.DROPDOWN
     ) {
-      setSelectedPreferences(prevState => ({
-        ...prevState,
+      const newSelectedPreferences = {
+        ...selectedPreferences,
         [preferenceName]: {
-          ...(prevState[preferenceName] || []),
+          ...(selectedPreferences[preferenceName] || []),
           [preferenceSubCategoryName]: {key: itemKey, text: itemName},
         },
-      }));
+      };
+      setSelectedPreferences(newSelectedPreferences);
     } else {
       if (
         selectedPreferences[preferenceName]?.some(item => item.key === itemKey)
       ) {
-        setSelectedPreferences(prevState => ({
-          ...prevState,
+        const newSelectedPreferences = {
+          ...selectedPreferences,
           [preferenceName]:
-            prevState[preferenceName]?.filter(item => item.text !== itemName) ||
-            [],
-        }));
+            selectedPreferences[preferenceName]?.filter(
+              item => item.text !== itemName,
+            ) || [],
+        };
+        setSelectedPreferences(newSelectedPreferences);
       } else {
-        setSelectedPreferences(prevState => ({
-          ...prevState,
+        const newSelectedPreferences = {
+          ...selectedPreferences,
           [preferenceName]: [
-            ...(prevState[preferenceName] || []),
+            ...(selectedPreferences[preferenceName] || []),
             {key: itemKey, text: itemName},
           ],
-        }));
+        };
+        setSelectedPreferences(newSelectedPreferences);
       }
     }
   };
@@ -158,12 +170,11 @@ const SelectPreferenceScreen = () => {
           </Pressable>
         </View>
       ) : (
-        <View style={styles.buttonContainer}>
-          <CustomButton
-            onPress={onContinuePress}
-            title={Select_Preference_Static_Data.buttonTitle}
-          />
-        </View>
+        <CustomButton
+          onPress={onContinuePress}
+          title={Select_Preference_Static_Data.buttonTitle}
+          containerStyle={styles.buttonContainer}
+        />
       )}
     </SafeAreaView>
   );
@@ -175,11 +186,11 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 32,
-    fontFamily: 'DMSans-Bold',
-    fontWeight: 700,
+    fontFamily: FontNames.DM_Sans_Bold,
+    // fontWeight: 700,
   },
   listContainer: {
-    marginTop: 16,
+    // marginTop: 16,
   },
   listViewItem: {
     borderWidth: 1,
@@ -191,13 +202,13 @@ const styles = StyleSheet.create({
   },
   itemHeading: {
     fontSize: 18,
-    fontFamily: 'DMSans-Bold',
-    fontWeight: 700,
+    fontFamily: FontNames.DM_Sans_Bold,
+    // fontWeight: 700,
   },
   itemSubheading: {
-    fontFamily: 'DMSans-Regular',
+    fontFamily: FontNames.DM_Sans_Regular,
     fontSize: 18,
-    fontWeight: 400,
+    // fontWeight: 400,
     paddingTop: 4,
   },
   chipViewItem: {
@@ -215,8 +226,8 @@ const styles = StyleSheet.create({
   },
   pressableText: {
     textAlign: 'center',
-    fontFamily: 'DMSans-Bold',
-    fontWeight: 500,
+    fontFamily: FontNames.DM_Sans_Bold,
+    // fontWeight: 500,
     fontSize: 18,
     paddingHorizontal: 24,
     paddingVertical: 16,

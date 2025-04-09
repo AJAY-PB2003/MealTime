@@ -1,22 +1,71 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Pressable, StyleSheet, View, Text, Image} from 'react-native';
 import {CustomIcon} from './CustomIcon';
 
+import LinearGradient from 'react-native-linear-gradient';
+import {createShimmerPlaceholder} from 'react-native-shimmer-placeholder';
+import {FontNames} from '../const/fontNames';
+import {useTheme} from 'react-native-paper';
+import {Meal_Card_Static_Data} from '../const';
+const ShimmerPlaceholder = createShimmerPlaceholder(LinearGradient);
+
 const MealCard = props => {
-  const {title, imgUrl, iconName, iconColor, onCardPress, onIconPress} = props;
+  const {
+    title,
+    imgUrl,
+    prepTime,
+    rating,
+    iconName,
+    iconColor,
+    onCardPress,
+    onIconPress,
+    imgHeight = 150,
+    imgWidth = 150,
+  } = props;
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const theme = useTheme();
   return (
-    <Pressable onPress={onCardPress} style={styles.card}>
-      <View style={styles.imgContainer}>
-        <Image
-          style={styles.img}
-          width={150}
-          height={150}
-          src={imgUrl}
-          //  resizeMode="contain"
-        />
+    <Pressable onPress={onCardPress} style={{width: imgWidth}}>
+      <View style={[styles.imgContainer, {width: imgWidth, height: imgHeight}]}>
+        <ShimmerPlaceholder
+          visible={imageLoaded}
+          style={{width: imgWidth, height: imgHeight}}>
+          <Image
+            style={styles.img}
+            width={imgWidth}
+            height={imgHeight}
+            src={imgUrl}
+            resizeMode="stretch"
+            onLoad={() => {
+              setImageLoaded(true);
+            }}
+          />
+        </ShimmerPlaceholder>
         <Pressable onPress={onIconPress} style={styles.icon}>
           <CustomIcon iconName={iconName} iconSize={16} color={iconColor} />
         </Pressable>
+      </View>
+      <View
+        style={[
+          styles.infoContainer,
+          {
+            backgroundColor: theme.colors.tertiaryContainer,
+          },
+        ]}>
+        <View style={styles.subTitleContainer}>
+          <CustomIcon
+            iconName={Meal_Card_Static_Data.subtitleContainerLeftIcon}
+            iconSize={15}
+          />
+          <Text style={styles.subTitle}>{`${prepTime} mins`}</Text>
+        </View>
+        <View style={styles.subTitleContainer}>
+          <Text style={styles.subTitle}>{`${rating}`}</Text>
+          <CustomIcon
+            iconName={Meal_Card_Static_Data.subtitleContainerRightIcon}
+            iconSize={15}
+          />
+        </View>
       </View>
 
       <Text style={styles.title}>{title}</Text>
@@ -25,18 +74,14 @@ const MealCard = props => {
 };
 
 const styles = StyleSheet.create({
-  card: {
-    // margin: 16,
-    gap: 10,
-    width: 150,
-  },
   imgContainer: {
-    width: 150,
-    height: 150,
+    // width: 150,
+    // height: 150,
     borderRadius: 20,
   },
   img: {
-    borderRadius: 20,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
   },
   icon: {
     backgroundColor: 'white',
@@ -49,10 +94,28 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  infoContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    borderBottomRightRadius: 20,
+    borderBottomLeftRadius: 20,
+    padding: 5,
+  },
   title: {
-    fontSize: 14,
-    fontWeight: 700,
-    fontFamily:'DMSans-Bold'
+    marginTop: 5,
+    fontSize: 15,
+    // fontWeight: 700,
+    fontFamily: FontNames.DM_Sans_Bold,
+  },
+  subTitle: {
+    fontSize: 13,
+    // fontWeight: 700,
+    fontFamily: FontNames.DM_Sans_Bold,
+  },
+  subTitleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 3,
   },
 });
 

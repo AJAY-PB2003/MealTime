@@ -11,6 +11,7 @@ import {
 import {Select_Preference_Static_Data} from '../const';
 import CustomDropdown from './CustomDropdown';
 import {useTheme} from 'react-native-paper';
+import {FontNames} from '../const/fontNames';
 
 const SelectPreferenceSlide = ({
   item = {},
@@ -39,7 +40,7 @@ const SelectPreferenceSlide = ({
         <Text style={styles.title}>{title}</Text>
         {viewType === Select_Preference_Static_Data.viewTypeNames?.DROPDOWN ? (
           <View style={styles.switchContainer}>
-            <Text style={[styles.title, {fontSize: 20}]}>
+            <Text style={[styles.title, {fontSize: 20, flexShrink: 1}]}>
               {Select_Preference_Static_Data.reminderText}
             </Text>
             <Switch
@@ -54,7 +55,10 @@ const SelectPreferenceSlide = ({
             />
           </View>
         ) : null}
-        <ScrollView style={styles.listContainer}>
+        <ScrollView
+          style={styles.listContainer}
+          showsVerticalScrollIndicator={false}
+          bounces={false}>
           <View
             style={
               viewType === Select_Preference_Static_Data?.viewTypeNames?.CHIP
@@ -142,9 +146,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   title: {
-    fontSize: 32,
-    fontFamily: 'DMSans-Bold',
-    fontWeight: 700,
+    fontSize: 30,
+    fontFamily: FontNames.DM_Sans_Bold,
+    // fontWeight: 700,
   },
   listContainer: {
     marginTop: 32,
@@ -154,22 +158,23 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     // padding: 16,
     paddingVertical: 16,
-    paddingHorizontal: 24,
+    paddingHorizontal: 16,
     // marginBottom: 12,
   },
   itemHeading: {
     fontSize: 18,
-    fontFamily: 'DMSans-Bold',
-    fontWeight: 700,
+    fontFamily: FontNames.DM_Sans_Bold,
+    // fontWeight: 700,
   },
   itemSubheading: {
-    fontFamily: 'DMSans-Regular',
+    fontFamily: FontNames.DM_Sans_Regular,
     fontSize: 18,
-    fontWeight: 400,
+    // fontWeight: 400,
     paddingTop: 4,
   },
   listView: {
     gap: 14,
+    marginBottom: 46,
   },
   chipView: {
     flexDirection: 'row',
@@ -180,7 +185,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingTop: 16,
     justifyContent: 'space-between',
-    alignItems: 'center',
+    alignItems: 'flex-start',
   },
 });
 

@@ -6,6 +6,7 @@ import {
   StyleSheet,
   useWindowDimensions,
   Pressable,
+  ScrollView,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import MyHeader from '../components/MyHeader';
@@ -15,9 +16,10 @@ import CustomButton from '../components/CustomButton';
 import {SCREEN_NAMES, WELCOME_SLIDE_Static_Data} from '../const';
 import {useNavigation} from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
+import {FontNames} from '../const/fontNames';
 
 const WelcomeSlideScreen = () => {
-  const {width} = useWindowDimensions();
+  const {width, height} = useWindowDimensions();
   const [index, setIndex] = useState(0);
   const currentIndexRef = useRef(index);
   currentIndexRef.current = index;
@@ -27,15 +29,8 @@ const WelcomeSlideScreen = () => {
   const onHeaderLeftIconPress = () => {
     if (index && index <= welcomeSlideDataList.length - 1) {
       const newIndex = index - 1;
-      setIndex(newIndex);
-      carouselRef?.current?.scrollToIndex({index: newIndex});
-    } else {
-      Toast.show({
-        type: 'error',
-        text1: 'Last Screen',
-        position: 'top',
-        topOffset: 60,
-      });
+      // setIndex(newIndex);
+      carouselRef?.current?.scrollToIndex({index: newIndex, animated: true});
     }
   };
 
@@ -44,7 +39,7 @@ const WelcomeSlideScreen = () => {
       navigation.navigate(SCREEN_NAMES.SELECT_PREFERENCE_SCREEN);
     } else {
       const newIndex = index + 1;
-      setIndex(newIndex);
+      // setIndex(newIndex);
       carouselRef?.current?.scrollToIndex({index: newIndex});
     }
   };
@@ -65,10 +60,12 @@ const WelcomeSlideScreen = () => {
         <Image
           source={item.imgPath}
           style={{
-            width: width - 64,
-            height: width - 64,
+            width: height / 3,
+            height: height / 3,
+            // height: width - 64,
+            alignSelf: 'center',
+            resizeMode: 'contain',
           }}
-          resizeMode="contain"
         />
       </View>
     );
@@ -76,48 +73,48 @@ const WelcomeSlideScreen = () => {
 
   return (
     <SafeAreaView style={{flex: 1}}>
-      <MyHeader
-        leftIconName={WELCOME_SLIDE_Static_Data.leftIconName}
-        onLeftIconPress={onHeaderLeftIconPress}
-      />
-
-      <View style={styles.container}>
-        <Carousel
-          dataList={welcomeSlideDataList}
-          renderItem={renderItemImages}
-          contentContainerStyle={{marginVertical: 8}}
-          currentIndexRef={currentIndexRef}
-          ref={carouselRef}
-          isScrollable={true}
-          showPagination={true}
-          onActiveIndexChange={setIndex}
+      <ScrollView contentContainerStyle={{flexGrow: 1}}>
+        <MyHeader
+          leftIconName={index ? WELCOME_SLIDE_Static_Data.leftIconName : null}
+          onLeftIconPress={index ? onHeaderLeftIconPress : undefined}
         />
-        <View style={styles.textContainer}>
-          <Text style={styles.title}>{welcomeSlideDataList[index]?.title}</Text>
-          <Text style={styles.subtitle}>
-            {welcomeSlideDataList[index]?.subtitle}
-          </Text>
-        </View>
-        <View
-          style={[
-            {
-              width: width - 32,
-            },
-            styles.buttonContainer,
-          ]}>
+
+        <View style={styles.container}>
+          <Carousel
+            dataList={welcomeSlideDataList}
+            renderItem={renderItemImages}
+            contentContainerStyle={{marginVertical: 8}}
+            currentIndexRef={currentIndexRef}
+            ref={carouselRef}
+            isScrollable={true}
+            showPagination={true}
+            onActiveIndexChange={setIndex}
+          />
+          <View style={styles.textContainer}>
+            <Text style={styles.title}>
+              {welcomeSlideDataList[index]?.title}
+            </Text>
+            <Text style={styles.subtitle}>
+              {welcomeSlideDataList[index]?.subtitle}
+            </Text>
+          </View>
           <CustomButton
             title={WELCOME_SLIDE_Static_Data.buttonTitle}
             onPress={onContinuePress}
+            containerStyle={[
+              {
+                width: width - 32,
+              },
+              styles.buttonContainer,
+            ]}
           />
-        </View>
-        <View style={[styles.pressableContainer]}>
-          <Pressable onPress={onSkipPress}>
+          <Pressable onPress={onSkipPress} style={styles.pressableContainer}>
             <Text style={styles.pressableText}>
               {WELCOME_SLIDE_Static_Data.pressableTitle}
             </Text>
           </Pressable>
         </View>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -148,16 +145,18 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   title: {
-    fontSize: 32,
+    fontSize: 30,
     textAlign: 'center',
-    fontFamily: 'DMSans-Bold',
-    fontWeight: 700,
+    fontFamily: FontNames.DM_Sans_Bold,
+    lineHeight: 40,
+    // fontWeight: 700,
   },
   subtitle: {
     fontSize: 18,
     textAlign: 'center',
     paddingHorizontal: 5,
-    fontFamily: 'DMSans-Regular',
+    fontFamily: FontNames.DM_Sans_Regular,
+    lineHeight: 27,
     // fontWeight: 400,
     color: 'grey',
   },
@@ -170,8 +169,9 @@ const styles = StyleSheet.create({
   },
   pressableText: {
     textAlign: 'center',
-    fontFamily: 'DMSans-Bold',
-    fontWeight: 500,
+    fontFamily: FontNames.DM_Sans_Bold,
+    // fontWeight: 500,
+    lineHeight: 27,
     fontSize: 18,
   },
 });
