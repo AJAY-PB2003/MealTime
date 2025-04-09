@@ -1,131 +1,112 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
+import './gesture-handler';
+import React, {useEffect, useState} from 'react';
+import {MD3LightTheme as DefaultTheme, PaperProvider} from 'react-native-paper';
+import MyStack from './src/nav';
+import {NavigationContainer} from '@react-navigation/native';
+import Toast from 'react-native-toast-message';
+import toastConfig from './src/components/toastConfig';
+import SelectMealPlanScreen from './src/screens/SelectMealPlanScreen';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import {useColorScheme} from 'react-native';
+import {COLOR_SCHEME} from './src/const';
+import {HexCodes} from './src/const/colorHexCode';
+import SplashScreen from './src/screens/SplashScreen';
 
-import React from 'react';
-import type {PropsWithChildren} from 'react';
-import {
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+const lightTheme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    primary: HexCodes.F58700,
+    onPrimary: HexCodes.FFFFFF,
+    primaryContainer: HexCodes.F58700,
+    onPrimaryContainer: HexCodes._1A1A1A,
+    primaryContainerFocused: HexCodes.FFE4C2,
+    primaryContainerUnfocused: HexCodes.FFFFFF,
+    primaryButton: HexCodes.F58700,
+    onPrimaryButton: HexCodes._1A1A1A,
+    primaryText: HexCodes._1A1A1A,
+    primaryIconFocused: HexCodes.F58700,
+    primaryIconUnfocused: HexCodes.E6E6E6,
+    primaryShadow: HexCodes._666666,
+    primaryIcon: HexCodes._999999,
+    primaryError: HexCodes.E55B48,
+    primaryBorder: HexCodes.CCCCCC,
+    primaryBlurBackground: HexCodes._19191999,
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+    secondary: HexCodes._33995B,
+    secondaryContainer: HexCodes.E6E6E6,
+    onSecondaryContainerHeading: HexCodes._1A1A1A,
+    onSecondaryContainerSubheading: HexCodes._666666,
+    secondaryIconFocused: HexCodes._33995B,
+    secondaryIconUnfocused: HexCodes.E6E6E6,
+    secondaryShadow: HexCodes._433D370F,
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
+    tertiary: HexCodes.FFFFFF,
+    onTertiary: HexCodes._1A1A1A,
+    tertiaryContainer: HexCodes.FFFFFF,
+    onTertiaryContainer: HexCodes._1A1A1A,
+    tertiaryIconFocused: HexCodes.F58700,
+    tertiaryIconUnfocused: HexCodes.B3B3B3,
+  },
+};
+const darkTheme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    primary: HexCodes.F58700,
+    onPrimary: HexCodes.FFFFFF,
+    primaryContainer: HexCodes.F58700,
+    onPrimaryContainer: HexCodes._1A1A1A,
+    primaryContainerFocused: HexCodes.FFE4C2,
+    primaryContainerUnfocused: HexCodes.FFFFFF,
+    primaryButton: HexCodes.F58700,
+    onPrimaryButton: HexCodes._1A1A1A,
+    primaryText: HexCodes._1A1A1A,
+    primaryIconFocused: HexCodes.F58700,
+    primaryIconUnfocused: HexCodes.E6E6E6,
+    primaryShadow: HexCodes._666666,
+    primaryIcon: HexCodes._999999,
+    primaryError: HexCodes.E55B48,
+    primaryBorder: HexCodes.CCCCCC,
+    primaryBlurBackground: HexCodes._19191999,
 
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-}
+    secondary: HexCodes._33995B,
+    secondaryContainer: HexCodes.E6E6E6,
+    onSecondaryContainerHeading: HexCodes._1A1A1A,
+    onSecondaryContainerSubheading: HexCodes._666666,
+    secondaryIconFocused: HexCodes._33995B,
+    secondaryIconUnfocused: HexCodes.E6E6E6,
+    secondaryShadow: HexCodes._433D370F,
+
+    tertiary: HexCodes.FFFFFF,
+    onTertiary: HexCodes._1A1A1A,
+    tertiaryContainer: HexCodes.FFFFFF,
+    onTertiaryContainer: HexCodes._1A1A1A,
+    tertiaryIconFocused: HexCodes.F58700,
+    tertiaryIconUnfocused: HexCodes.B3B3B3,
+  },
+};
 
 function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
-  /*
-   * To keep the template simple and small we're adding padding to prevent view
-   * from rendering under the System UI.
-   * For bigger apps the reccomendation is to use `react-native-safe-area-context`:
-   * https://github.com/AppAndFlow/react-native-safe-area-context
-   *
-   * You can read more about it here:
-   * https://github.com/react-native-community/discussions-and-proposals/discussions/827
-   */
-  const safePadding = '5%';
+  const colorScheme = useColorScheme();
+  const [showSplash, setShowSplash] = useState(true);
+  useEffect(() => {
+    setTimeout(() => {
+      setShowSplash(false);
+    }, 2000);
+  }, []);
 
   return (
-    <View style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        style={backgroundStyle}>
-        <View style={{paddingRight: safePadding}}>
-          <Header/>
-        </View>
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-            paddingHorizontal: safePadding,
-            paddingBottom: safePadding,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </View>
+    <GestureHandlerRootView>
+      <PaperProvider
+        theme={colorScheme === COLOR_SCHEME.DARK ? darkTheme : lightTheme}>
+        <NavigationContainer>
+          {showSplash ? <SplashScreen /> : <MyStack />}
+        </NavigationContainer>
+        <Toast config={toastConfig} visibilityTime={1000} />
+      </PaperProvider>
+    </GestureHandlerRootView>
   );
 }
-
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
 
 export default App;
